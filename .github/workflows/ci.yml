@@ -1,0 +1,24 @@
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'simple_project/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t devops-app ./simple_project
+
+      - name: Run container
+        run: docker run -d -p 5000:5000 --name myapp devops-app
+
+      - name: Test the app
+        run: |
+          sleep 5
+          curl --fail localhost:5000
+          curl --fail localhost:5000/health
